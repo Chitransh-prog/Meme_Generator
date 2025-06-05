@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Meme Templates Gallery{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Choose a Meme Template</h2>
+  
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+    {% for template in templates %}
+    <div class="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+      <a href="{{ url_for('generate', template_id=template.id) }}" class="block">
+        <img 
+          src="{{ template.blank }}" 
+          alt="{{ template.name }}" 
+          class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <h3 class="text-white font-semibold text-lg truncate">{{ template.name }}</h3>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
