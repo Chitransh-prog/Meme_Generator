@@ -18,9 +18,9 @@
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <div class="hidden sm:ml-6 sm:block">
             <div class="flex space-x-4">
-              <a href="{{ url_for('gallery') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'gallery' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Home</a>
-              <a href="{{ url_for('generate', template_id='aag') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'generate' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Generate Meme</a>
-              <a href="{{ url_for('about') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'about' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">About</a>
+                <a href="{{ url_for('gallery') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'gallery' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Home</a>
+                <a href="{{ url_for('generate') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'generate' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">Generate Meme</a>
+                <a href="{{ url_for('about') }}" class="rounded-md px-3 py-2 text-sm font-medium {% if request.endpoint == 'about' %}bg-gray-900 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %}">About</a>
             </div>
           </div>
         </div>
