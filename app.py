@@ -52,8 +52,8 @@ def gallery():
     templates = get_templates()
     return render_template("gallery.html", templates=templates)
 
-@app.route("/generate/<template_id>", methods=["GET", "POST"])
-def generate(template_id):
+@app.route('/generate', methods=['GET', 'POST'])
+def generate():
     template_id = request.form.get('template') or request.args.get('template_id') or 'aag'
     meme_url = None
     templates = get_templates()  
