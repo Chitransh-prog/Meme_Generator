@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
-  <form method="POST" action="{{ url_for('generate', template_id=template_id) }}" class="space-y-4">
+  <form method="POST" action="{{ url_for('generate') }}" class="space-y-4">
     <label class="block text-sm font-medium">Choose Template:</label>
     <select name="template" class="w-full border px-3 py-2 rounded">
       {% for template in templates %}
