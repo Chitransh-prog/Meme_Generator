@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request 
-from flask import send_file
+from flask import Flask, render_template, request, send_file
 import requests
 from datetime import datetime
 import logging
 import io
+
 app = Flask(__name__)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-MEME_API_URL="https://api.memegen.link"
+MEME_API_URL = "https://api.memegen.link"
 
 @app.route('/download_meme')
 def download_meme():
@@ -29,13 +29,15 @@ def download_meme():
     except Exception as e:
         logger.error(f"Error downloading meme: {e}")
         return "Failed to download meme", 500
+
+
 def get_templates():
     try:
         response = requests.get(f"{MEME_API_URL}/templates")
         response.raise_for_status()
         templates = response.json()
 
-        # Add num_fields to each template based on example.text length
+        # Add num_fields dynamically from example.text length
         for template in templates:
             try:
                 template['num_fields'] = len(template.get("example", {}).get("text", []))
@@ -53,11 +55,11 @@ def format_text(text):
     """Format text for meme URL according to API requirements."""
     if not isinstance(text, str):
         return "_"
-        
+
     replacements = [
-        (' ', '_'),
         ('-', '--'),
         ('_', '__'),
+        (' ', '_'),
         ('?', '~q'),
         ('%', '~p'),
         ('#', '~h'),
@@ -65,17 +67,19 @@ def format_text(text):
         ('\\', '~b'),
         ('"', "''")
     ]
-    
+
     formatted_text = text
     for old, new in replacements:
         formatted_text = formatted_text.replace(old, new)
-        
+
     return formatted_text or "_"
+
 
 @app.route("/")
 def gallery():
     templates = get_templates()
     return render_template("gallery.html", templates=templates)
+
 
 @app.route('/generate', methods=['GET', 'POST'])
 def generate():
@@ -83,17 +87,18 @@ def generate():
     meme_url = None
     templates = get_templates()
 
-    # Lookup num_fields from template list
-    num_fields = 2  # default
-    for t in templates:
-        if t["id"] == template_id:
-            num_fields = t.get("num_fields", 2)
-            break
+    # Dynamically determine number of fields from selected template
+    selected_template = next((t for t in templates if t['id'] == template_id), None)
+    num_fields = selected_template['num_fields'] if selected_template else 2
+
+    original_texts = []
 
     if request.method == "POST":
-        texts = request.form.getlist("texts")
-        formatted_lines = [format_text(t.strip()) for t in texts if t.strip()]
-        meme_url = f"{MEME_API_URL}/images/{template_id}/" + "/".join(formatted_lines) + ".png"
+        original_texts = [t.strip() for t in request.form.getlist("texts") if t.strip()]
+        formatted_texts = [format_text(t) for t in original_texts]
+
+        # Build meme URL with formatted text
+        meme_url = f"{MEME_API_URL}/images/{template_id}/" + "/".join(formatted_texts) + ".png"
 
     return render_template(
         "generate.html",
@@ -101,12 +106,15 @@ def generate():
         meme_url=meme_url,
         timestamp=int(datetime.now().timestamp()),
         templates=templates,
-        num_fields=num_fields
+        num_fields=num_fields,
+        original_texts=original_texts
     )
+
 
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)
