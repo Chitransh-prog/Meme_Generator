@@ -62,26 +62,27 @@ def gallery():
 def generate():
     template_id = request.form.get('template') or request.args.get('template_id') or 'aag'
     meme_url = None
-    templates = get_templates()  
-    
+    templates = get_templates()
+
+    # Lookup num_fields from template list
+    num_fields = 2  # default
+    for t in templates:
+        if t["id"] == template_id:
+            num_fields = t.get("num_fields", 2)
+            break
+
     if request.method == "POST":
-        top = request.form.get("top_text", "").strip()
-        bottom = request.form.get("bottom_text", "").strip()
-
-        top_encoded = format_text(top)
-        bottom_encoded = format_text(bottom)
-
-        meme_url = (
-            f"{MEME_API_URL}/images/{template_id}/"
-            f"{top_encoded}/{bottom_encoded}.png"
-        )
+        texts = request.form.getlist("texts")
+        formatted_lines = [format_text(t.strip()) for t in texts if t.strip()]
+        meme_url = f"{MEME_API_URL}/images/{template_id}/" + "/".join(formatted_lines) + ".png"
 
     return render_template(
         "generate.html",
         template_id=template_id,
         meme_url=meme_url,
         timestamp=int(datetime.now().timestamp()),
-        templates=templates  
+        templates=templates,
+        num_fields=num_fields
     )
 
 @app.route('/about')
