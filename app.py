@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request 
+from flask import send_file
 import requests
 from datetime import datetime
 import logging
-
+import io
 app = Flask(__name__)
 
 logging.basicConfig(level=logging.INFO)
@@ -10,25 +11,43 @@ logger = logging.getLogger(__name__)
 
 MEME_API_URL="https://api.memegen.link"
 
+@app.route('/download_meme')
+def download_meme():
+    meme_url = request.args.get('url')
+    if not meme_url:
+        return "No URL provided", 400
+
+    try:
+        response = requests.get(meme_url)
+        response.raise_for_status()
+        return send_file(
+            io.BytesIO(response.content),
+            mimetype='image/png',
+            as_attachment=True,
+            download_name='meme.png'
+        )
+    except Exception as e:
+        logger.error(f"Error downloading meme: {e}")
+        return "Failed to download meme", 500
 def get_templates():
     try:
         response = requests.get(f"{MEME_API_URL}/templates")
         response.raise_for_status()
         templates = response.json()
 
+        # Add num_fields to each template based on example.text length
         for template in templates:
             try:
                 template['num_fields'] = len(template.get("example", {}).get("text", []))
             except Exception:
-                template['num_fields'] = 2 
+                template['num_fields'] = 2  # fallback default
+
         return templates
-        
+
     except requests.exceptions.RequestException as e:
         logger.error(f"Failed to fetch templates: {str(e)}")
         return []
-    except ValueError as e:  
-        logger.error(f"Invalid response from API: {str(e)}")
-        return []
+
 
 def format_text(text):
     """Format text for meme URL according to API requirements."""
