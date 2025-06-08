@@ -17,7 +17,7 @@
     <div id="text-inputs">
       {% for i in range(num_fields) %}
         <label class="block text-sm font-medium">Text Line {{ i + 1 }}:</label>
-        <input type="text" name="texts" class="w-full border px-3 py-2 rounded" required>
+        <input type="text" name="texts" class="w-full border px-3 py-2 rounded" required value="{{ original_texts[i] if original_texts and i < original_texts|length }}">
       {% endfor %}
     </div>
 
@@ -30,38 +30,14 @@
 
     <div class="flex justify-center gap-2">
       <!-- Download Button -->
-      <button id="downloadBtn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+      <a href="{{ meme_url }}" download="meme.png" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
         <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
         </svg>
         Download
-      </button>
-
-      <!-- Loading Button -->
-      <button id="loadingBtn" disabled class="hidden text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
-        <svg aria-hidden="true" class="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none">
-          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908..." fill="currentColor"/>
-        </svg>
-        Downloading...
-      </button>
+      </a>
     </div>
   </div>
-
-  <script>
-    document.getElementById('downloadBtn').addEventListener('click', function () {
-      this.classList.add('hidden');
-      document.getElementById('loadingBtn').classList.remove('hidden');
-  
-      const link = document.createElement('a');
-      link.href = "/download_meme?url={{ meme_url | urlencode }}";
-      link.click();
-  
-      setTimeout(() => {
-        document.getElementById('loadingBtn').classList.add('hidden');
-        document.getElementById('downloadBtn').classList.remove('hidden');
-      }, 1500);
-    });
-  </script>  
   {% endif %}
 </div>
 {% endblock %}
