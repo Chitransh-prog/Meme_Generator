@@ -12,11 +12,17 @@ MEME_API_URL="https://api.memegen.link"
 
 def get_templates():
     try:
-        response = requests.get(
-            f"{MEME_API_URL}/templates",
-        )
-        response.raise_for_status()  
-        return response.json()
+        response = requests.get(f"{MEME_API_URL}/templates")
+        response.raise_for_status()
+        templates = response.json()
+
+        for template in templates:
+            try:
+                template['num_fields'] = len(template.get("example", {}).get("text", []))
+            except Exception:
+                template['num_fields'] = 2 
+        return templates
+        
     except requests.exceptions.RequestException as e:
         logger.error(f"Failed to fetch templates: {str(e)}")
         return []
