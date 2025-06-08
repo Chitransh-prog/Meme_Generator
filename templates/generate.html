@@ -12,11 +12,13 @@
       {% endfor %}
     </select>
 
-    <label class="block text-sm font-medium">Top Text:</label>
-    <input type="text" name="top_text" class="w-full border px-3 py-2 rounded">
-
-    <label class="block text-sm font-medium">Bottom Text:</label>
-    <input type="text" name="bottom_text" class="w-full border px-3 py-2 rounded">
+    <!-- Dynamic Text Fields -->
+    <div id="text-inputs">
+      {% for i in range(num_fields) %}
+        <label class="block text-sm font-medium">Text Line {{ i + 1 }}:</label>
+        <input type="text" name="texts" class="w-full border px-3 py-2 rounded" required>
+      {% endfor %}
+    </div>
 
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generate Meme</button>
   </form>
