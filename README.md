@@ -2,8 +2,6 @@
 
 A Flask-based web application for generating custom memes using the Meme Generator API.
 
-![Screenshot](screenshot.png) <!-- Add your screenshot later -->
-
 ## Features
 
 - Browse popular meme templates
